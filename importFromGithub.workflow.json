@@ -25,37 +25,44 @@
         }
       },
       {
-        "parameters": {
-          "resource": "file",
-          "operation": "get",
-          "owner": {
-            "__rl": true,
-            "value": "={{ $('Webhook').item.json.body.owner }}",
-            "mode": "name"
-          },
-          "repository": {
-            "__rl": true,
-            "value": "={{ $('Webhook').item.json.body.repository }}",
-            "mode": "name"
-          },
-          "filePath": "={{ $json.path }}",
-          "additionalParameters": {}
-        },
-        "type": "n8n-nodes-base.github",
-        "typeVersion": 1.1,
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
         "position": [
           900,
-          -220
+          -20
         ],
-        "id": "8c4f7bcc-0c3c-4333-a39e-51d29be43c87",
-        "name": "GitHub",
-        "webhookId": "ec903eb1-d4be-4332-8e28-7f384479336a",
-        "credentials": {
-          "githubApi": {
-            "id": "Nx9eJjTiUfwyntOr",
-            "name": "GitHub account"
-          }
-        }
+        "id": "62de08a4-db11-4602-9e4b-756fdecd2809",
+        "name": "No Operation, do nothing"
+      },
+      {
+        "parameters": {
+          "command": "mkdir -p workflows"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          20,
+          -45
+        ],
+        "id": "faff0550-2ddd-4903-a2c2-c6081cf3098e",
+        "name": "create workflows sub folder if not exist"
+      },
+      {
+        "parameters": {
+          "content": "# Github import\nThis webhook is secured with a basic authentication credential. Make sure to edit it to values you own.\n\nThe webhook receives the github owner and repository from whitch it should import the workflows.\n\nIt will download all json files into a local directory and call the n8n cli to import them.\n\nThere is a companion developement template on github that complements this flow, including the Github Action that can call this workflow. You can get it from here: https://github.com/dynamicNerdsSolutions/n8n-git-flow-template\n\n## First step :\nCreate the credentials for the webhook authentication and github.",
+          "height": 500,
+          "width": 520,
+          "color": 6
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -740,
+          -300
+        ],
+        "id": "2b9a3378-f36a-4a25-bcc1-82fa403b85a7",
+        "name": "Sticky Note"
       },
       {
         "parameters": {
@@ -79,7 +86,7 @@
           -45
         ],
         "id": "9143f124-30b5-4a55-b3b7-03cd3c4fdfe8",
-        "name": "GitHub1",
+        "name": "List files from specified repo root",
         "webhookId": "b04d7d0c-b721-4d30-b4bd-29ed04f5ac9d",
         "credentials": {
           "githubApi": {
@@ -87,6 +94,19 @@
             "name": "GitHub account"
           }
         }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          460,
+          -40
+        ],
+        "id": "f28d4f42-e7a0-4a25-8d1e-44de3a04f11a",
+        "name": "Loop Over Files"
       },
       {
         "parameters": {
@@ -129,18 +149,40 @@
           -120
         ],
         "id": "64d6aeac-bc11-4204-bea5-7f678fddf2b7",
-        "name": "If"
+        "name": "If it is a json file"
       },
       {
-        "parameters": {},
-        "type": "n8n-nodes-base.noOp",
-        "typeVersion": 1,
+        "parameters": {
+          "resource": "file",
+          "operation": "get",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('Webhook').item.json.body.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('Webhook').item.json.body.repository }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $json.path }}",
+          "additionalParameters": {}
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
         "position": [
           900,
-          -20
+          -220
         ],
-        "id": "62de08a4-db11-4602-9e4b-756fdecd2809",
-        "name": "No Operation, do nothing"
+        "id": "8c4f7bcc-0c3c-4333-a39e-51d29be43c87",
+        "name": "Download file",
+        "webhookId": "ec903eb1-d4be-4332-8e28-7f384479336a",
+        "credentials": {
+          "githubApi": {
+            "id": "Nx9eJjTiUfwyntOr",
+            "name": "GitHub account"
+          }
+        }
       },
       {
         "parameters": {
@@ -151,24 +193,11 @@
         "type": "n8n-nodes-base.readWriteFile",
         "typeVersion": 1,
         "position": [
-          1120,
-          -45
+          1140,
+          -60
         ],
         "id": "27ee1e73-66d5-4c86-a6ea-6be4786bc97e",
-        "name": "Read/Write Files from Disk1"
-      },
-      {
-        "parameters": {
-          "options": {}
-        },
-        "type": "n8n-nodes-base.splitInBatches",
-        "typeVersion": 3,
-        "position": [
-          460,
-          -45
-        ],
-        "id": "f28d4f42-e7a0-4a25-8d1e-44de3a04f11a",
-        "name": "Loop Over Items"
+        "name": "Store file locally"
       },
       {
         "parameters": {
@@ -181,36 +210,7 @@
           -320
         ],
         "id": "3a2a58ae-2f8f-447a-8a95-073d1f5575d6",
-        "name": "n8n import and cleanup folder"
-      },
-      {
-        "parameters": {
-          "command": "mkdir -p workflows"
-        },
-        "type": "n8n-nodes-base.executeCommand",
-        "typeVersion": 1,
-        "position": [
-          20,
-          -45
-        ],
-        "id": "faff0550-2ddd-4903-a2c2-c6081cf3098e",
-        "name": "create workflows sub folder if not exist"
-      },
-      {
-        "parameters": {
-          "content": "# Github import\nThis webhook is secured with a basic authentication credential. Make sure to edit it to values you own.\n\nThe webhook receives the github owner and repository from whitch it should import the workflows.\n\nIt will download all json files into a local directory and call the n8n cli to import them.\n\nThere is a companion developement template on github that complements this flow, including the Github Action that can call this workflow. You can get it from here: https://github.com/dynamicNerdsSolutions/n8n-git-flow-template\n\n## First step :\nCreate the credentials for the webhook authentication and github.",
-          "height": 500,
-          "width": 520,
-          "color": 6
-        },
-        "type": "n8n-nodes-base.stickyNote",
-        "typeVersion": 1,
-        "position": [
-          -740,
-          -300
-        ],
-        "id": "2b9a3378-f36a-4a25-bcc1-82fa403b85a7",
-        "name": "Sticky Note"
+        "name": "Call n8n import and cleanup folder"
       }
     ],
     "connections": {
@@ -225,33 +225,62 @@
           ]
         ]
       },
-      "GitHub": {
+      "No Operation, do nothing": {
         "main": [
           [
             {
-              "node": "Read/Write Files from Disk1",
+              "node": "Loop Over Files",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "GitHub1": {
+      "create workflows sub folder if not exist": {
         "main": [
           [
             {
-              "node": "Loop Over Items",
+              "node": "List files from specified repo root",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "If": {
+      "List files from specified repo root": {
         "main": [
           [
             {
-              "node": "GitHub",
+              "node": "Loop Over Files",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Files": {
+        "main": [
+          [
+            {
+              "node": "Call n8n import and cleanup folder",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "If it is a json file",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If it is a json file": {
+        "main": [
+          [
+            {
+              "node": "Download file",
               "type": "main",
               "index": 0
             }
@@ -265,51 +294,22 @@
           ]
         ]
       },
-      "No Operation, do nothing": {
+      "Download file": {
         "main": [
           [
             {
-              "node": "Loop Over Items",
+              "node": "Store file locally",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Read/Write Files from Disk1": {
+      "Store file locally": {
         "main": [
           [
             {
-              "node": "Loop Over Items",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Loop Over Items": {
-        "main": [
-          [
-            {
-              "node": "n8n import and cleanup folder",
-              "type": "main",
-              "index": 0
-            }
-          ],
-          [
-            {
-              "node": "If",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "create workflows sub folder if not exist": {
-        "main": [
-          [
-            {
-              "node": "GitHub1",
+              "node": "Loop Over Files",
               "type": "main",
               "index": 0
             }
