@@ -1,0 +1,307 @@
+{
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "import-workflows",
+          "authentication": "basicAuth",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -220,
+          80
+        ],
+        "id": "6dcae6fd-9631-4f73-985c-31c08cfba106",
+        "name": "Webhook",
+        "webhookId": "182bd0f4-bab3-4d3f-8341-773c2af24107",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "0sXvlBjKe1sDOYj0",
+            "name": "Github action user"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "get",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('Webhook').item.json.body.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('Webhook').item.json.body.repository }}",
+            "mode": "name"
+          },
+          "filePath": "={{ $json.path }}",
+          "additionalParameters": {}
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          1100,
+          -80
+        ],
+        "id": "8c4f7bcc-0c3c-4333-a39e-51d29be43c87",
+        "name": "GitHub",
+        "webhookId": "ec903eb1-d4be-4332-8e28-7f384479336a",
+        "credentials": {
+          "githubApi": {
+            "id": "Nx9eJjTiUfwyntOr",
+            "name": "GitHub account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "list",
+          "owner": {
+            "__rl": true,
+            "value": "={{ $('Webhook').item.json.body.owner }}",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "={{ $('Webhook').item.json.body.repository }}",
+            "mode": "name"
+          }
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          380,
+          80
+        ],
+        "id": "9143f124-30b5-4a55-b3b7-03cd3c4fdfe8",
+        "name": "GitHub1",
+        "webhookId": "b04d7d0c-b721-4d30-b4bd-29ed04f5ac9d",
+        "credentials": {
+          "githubApi": {
+            "id": "Nx9eJjTiUfwyntOr",
+            "name": "GitHub account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "8ad03c7c-1820-4f9e-998c-a209cc829ea3",
+                "leftValue": "={{ $json.type }}",
+                "rightValue": "file",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              },
+              {
+                "id": "1a26b68e-91d6-468b-aed5-db0e4cee0f74",
+                "leftValue": "={{ $json.name }}",
+                "rightValue": ".json",
+                "operator": {
+                  "type": "string",
+                  "operation": "endsWith"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          880,
+          20
+        ],
+        "id": "64d6aeac-bc11-4204-bea5-7f678fddf2b7",
+        "name": "If"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          1100,
+          120
+        ],
+        "id": "62de08a4-db11-4602-9e4b-756fdecd2809",
+        "name": "No Operation, do nothing"
+      },
+      {
+        "parameters": {
+          "operation": "write",
+          "fileName": "=workflows/{{ $json.name }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          1320,
+          100
+        ],
+        "id": "27ee1e73-66d5-4c86-a6ea-6be4786bc97e",
+        "name": "Read/Write Files from Disk1"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          660,
+          95
+        ],
+        "id": "f28d4f42-e7a0-4a25-8d1e-44de3a04f11a",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "command": "n8n import:workflow --separate --input=workflows && rm ./workflows/*.json"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          880,
+          -180
+        ],
+        "id": "3a2a58ae-2f8f-447a-8a95-073d1f5575d6",
+        "name": "n8n import and cleanup folder"
+      },
+      {
+        "parameters": {
+          "command": "mkdir -p workflows"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          0,
+          80
+        ],
+        "id": "faff0550-2ddd-4903-a2c2-c6081cf3098e",
+        "name": "create workflows sub folder if not exist"
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "create workflows sub folder if not exist",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GitHub": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GitHub1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "GitHub",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "No Operation, do nothing",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "No Operation, do nothing": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "n8n import and cleanup folder",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "create workflows sub folder if not exist": {
+        "main": [
+          [
+            {
+              "node": "GitHub1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "meta": {
+
+    }
+  }
