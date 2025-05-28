@@ -36,7 +36,10 @@ docker exec -it $DOCKER_CONTAINER_NAME n8n export:workflow --backup --output=/fi
 
 #enforce commit message
 if [ -z "$message" ]; then
-    echo "Commit message is empty. Skipping commit."
+    echo "Commit message is empty."
+    if [ "$push" = true ]; then
+        echo "Also skipping push."
+    fi
     exit 0
 fi
 
