@@ -1,6 +1,6 @@
 #!/bin/bash
 ## Parameters are:
-# -m: Commit message
+# -m: Commit message. Will not commit if empty
 # -p: Push to remote repository (default: false)
 
 #get parameters by name
@@ -29,15 +29,16 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-#enforce commit message
-if [ -z "$message" ]; then
-    echo "Commit message is empty, please provide a message with -m parameter"
-    exit 1
-fi
-
 source .env
 echo "Exporting workflows to ./local-files/backups"
 docker exec -it $DOCKER_CONTAINER_NAME n8n export:workflow --backup --output=/files/backups
+
+
+#enforce commit message
+if [ -z "$message" ]; then
+    echo "Commit message is empty. Skipping commit."
+    exit 0
+fi
 
 echo "Adding files to git"
 git add ./local-files/backups/*
