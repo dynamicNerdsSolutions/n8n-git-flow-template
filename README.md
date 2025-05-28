@@ -1,6 +1,13 @@
 # n8n Development and Deployment Template
 
-This repository provides a template for developing n8n workflows locally and deploying them through a CI/CD pipeline. It's designed to help teams maintain version control of their n8n workflows and automate their deployment process.
+This repository provides a template for developing n8n workflows locally and deploying them through a CI/CD pipeline. It's designed to help teams version control of their n8n workflows and automate their deployment process.
+
+The root directory of this repo is used to start a basic dockerized n8n instance that you can use to start working. You will see in the instructions below that we will create another repo in a subfolder. This nested repo is your actual project repo where workflows will be stored and pushed. Going this way allows to use one instance per project, thus allowing to export only the workflows related to a project. No playing with tags.
+
+## Why a nested repo ?
+We don't all have the same server setup, but we all use the same tool. I chose to go with a separate repo to avoid forcing a specific docker setup on server. I, for instance, often use the [n8n-blue-green-docker-compose](https://github.com/dynamicNerdsSolutions/n8n-blue-green-docker-compose) on server but don't want to use it when developing.
+Not exaclty respecting the Continuous delivery principles, I know...
+
 
 ## Table of Contents
 - [Overview](#overview)
