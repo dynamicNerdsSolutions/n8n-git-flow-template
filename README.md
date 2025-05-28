@@ -58,10 +58,6 @@ I recommend using this current repo as a template to start development, but the 
    - Each workflow is saved as a separate JSON file
    - Commit and push changes to your GitHub repository
 
-3. **CI/CD Pipeline**
-   - Set up your CI/CD pipeline in your GitHub repository
-   - Configure deployment to your production server by either calling `git pull` or any other way to import the workflows in its instance
-
 ## Project Structure
 ```
 .
@@ -79,14 +75,24 @@ Required environment variables:
 - `GENERIC_TIMEZONE`: Timezone for n8n
 
 ## Deployment
-1. **Production Server Setup**
+1. **Production cli based deployment** (no example yet)
    - Have n8n ready on your server, either with npm or docker. See [Self-Hosting n8n](https://docs.n8n.io/hosting/) for more details
-   - Clone your repository (the one initialised in `local-files/backups`) on your serveur
+   - Clone your repository (the one initialised in `local-files/backups`) on your server
+   - follow the instructions in ./local-files/backups/readme.md#pull.sh 
 
-2. **CI/CD Configuration**
-   - Configure your CI/CD pipeline to:
-     - Pull the latest changes
-     - Run pull.sh
+2. **Webhook-Based Deployment (Currently implemented)**
+   - An example deployment workflow is provided in the `.github/workflows` directory
+   - The deployment is triggered via a webhook from GitHub to n8n
+   - To set up the webhook-based deployment:
+     1. Copy the workflow from `importFromGithub.workflow.json` into your production n8n instance (copy paste the json in the visual builder) and activate it
+     2. Create the required github credentials in your n8n instance
+     3. Set up the following GitHub secrets in your repository:
+        - `N8N_WEBHOOK_URL`: The webhook URL from your n8n instance
+        - `N8N_API_KEY`: Your n8n API key
+        - `N8N_BASE_URL`: Your n8n instance base URL
+     
+   - This setup allows for automatic deployment whenever changes are pushed to your repository. It reimport **ALL** workflows in that state that it was in development.
+
 
 ## Contributing
 1. Fork the repository
