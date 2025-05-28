@@ -11,8 +11,8 @@
         "type": "n8n-nodes-base.webhook",
         "typeVersion": 2,
         "position": [
-          -220,
-          80
+          -200,
+          -45
         ],
         "id": "6dcae6fd-9631-4f73-985c-31c08cfba106",
         "name": "Webhook",
@@ -44,8 +44,8 @@
         "type": "n8n-nodes-base.github",
         "typeVersion": 1.1,
         "position": [
-          1100,
-          -80
+          900,
+          -220
         ],
         "id": "8c4f7bcc-0c3c-4333-a39e-51d29be43c87",
         "name": "GitHub",
@@ -75,8 +75,8 @@
         "type": "n8n-nodes-base.github",
         "typeVersion": 1.1,
         "position": [
-          380,
-          80
+          240,
+          -45
         ],
         "id": "9143f124-30b5-4a55-b3b7-03cd3c4fdfe8",
         "name": "GitHub1",
@@ -125,8 +125,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.2,
         "position": [
-          880,
-          20
+          680,
+          -120
         ],
         "id": "64d6aeac-bc11-4204-bea5-7f678fddf2b7",
         "name": "If"
@@ -136,8 +136,8 @@
         "type": "n8n-nodes-base.noOp",
         "typeVersion": 1,
         "position": [
-          1100,
-          120
+          900,
+          -20
         ],
         "id": "62de08a4-db11-4602-9e4b-756fdecd2809",
         "name": "No Operation, do nothing"
@@ -151,8 +151,8 @@
         "type": "n8n-nodes-base.readWriteFile",
         "typeVersion": 1,
         "position": [
-          1320,
-          100
+          1120,
+          -45
         ],
         "id": "27ee1e73-66d5-4c86-a6ea-6be4786bc97e",
         "name": "Read/Write Files from Disk1"
@@ -164,8 +164,8 @@
         "type": "n8n-nodes-base.splitInBatches",
         "typeVersion": 3,
         "position": [
-          660,
-          95
+          460,
+          -45
         ],
         "id": "f28d4f42-e7a0-4a25-8d1e-44de3a04f11a",
         "name": "Loop Over Items"
@@ -177,8 +177,8 @@
         "type": "n8n-nodes-base.executeCommand",
         "typeVersion": 1,
         "position": [
-          880,
-          -180
+          680,
+          -320
         ],
         "id": "3a2a58ae-2f8f-447a-8a95-073d1f5575d6",
         "name": "n8n import and cleanup folder"
@@ -190,11 +190,27 @@
         "type": "n8n-nodes-base.executeCommand",
         "typeVersion": 1,
         "position": [
-          0,
-          80
+          20,
+          -45
         ],
         "id": "faff0550-2ddd-4903-a2c2-c6081cf3098e",
         "name": "create workflows sub folder if not exist"
+      },
+      {
+        "parameters": {
+          "content": "# Github import\nThis webhook is secured with a basic authentication credential. Make sure to edit it to values you own.\n\nThe webhook receives the github owner and repository from whitch it should import the workflows.\n\nIt will download all json files into a local directory and call the n8n cli to import them.\n\nThere is a companion developement template on github that complements this flow, including the Github Action that can call this workflow. You can get it from here: https://github.com/dynamicNerdsSolutions/n8n-git-flow-template\n\n## First step :\nCreate the credentials for the webhook authentication and github.",
+          "height": 500,
+          "width": 520,
+          "color": 6
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -740,
+          -300
+        ],
+        "id": "2b9a3378-f36a-4a25-bcc1-82fa403b85a7",
+        "name": "Sticky Note"
       }
     ],
     "connections": {
@@ -300,6 +316,5 @@
           ]
         ]
       }
-    },
-    "pinData": { }
+    }
   }
