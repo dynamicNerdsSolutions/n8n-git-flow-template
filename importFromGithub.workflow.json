@@ -172,7 +172,7 @@
       },
       {
         "parameters": {
-          "command": "n8n import:workflow --separate --input=workflows && rm ./workflows/*.json"
+          "command": "n8n import:workflow --separate --input=workflows && rm -f ./workflows/*.json"
         },
         "type": "n8n-nodes-base.executeCommand",
         "typeVersion": 1,
@@ -301,7 +301,5 @@
         ]
       }
     },
-    "meta": {
-
-    }
+    "pinData": { }
   }

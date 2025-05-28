@@ -43,7 +43,7 @@ git pull
 # Check if docker container name is provided
 if [ -z "$docker_container_name" ]; then
     echo "Docker container name is not provided. Using n8n cli directly."
-    n8n import:workflow --separate --input=.
+    n8n import:workflow --separate --input=workflows && rm -f ./workflows/*.json
     exit 0
 fi
 
