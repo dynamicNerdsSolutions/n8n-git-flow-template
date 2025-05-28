@@ -36,12 +36,16 @@ if [ -z "$message" ]; then
 fi
 
 source .env
-docker exec -it $DOCKER_CONTAINER_NAME n8n export:workflow --backup --output=./files/backups
+echo "Exporting workflows to ./local-files/backups"
+docker exec -it $DOCKER_CONTAINER_NAME n8n export:workflow --backup --output=/files/backups
 
+echo "Adding files to git"
+git add ./local-files/backups/*
 
-git add ./files/backups
+echo "Committing with message: $message"
 git commit -m "$message"
 
 if [ "$push" = true ]; then
+    echo "Pushing to remote repository"
     git push
 fi
