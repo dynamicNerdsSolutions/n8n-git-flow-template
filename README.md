@@ -34,15 +34,27 @@ This template helps you:
 
 ## Development Workflow
 1. **Local Development**
+I recommend using this current repo as a template to start development, but the actual workflows are in a separate repo, located in the local-files/backups repository. Allowing more flexibility in production.
+   - Initialize a repo in the `local-files/backups` directory by running `./init-backup-repo.sh`.
+   - Set up git remote as explained from the previous command.
    - Start the local n8n instance using Docker Compose `docker compose up`
    - Create and test your workflows in the n8n interface
-   - Use the `n8n-commit.sh` script to commit your workflows:
-     ```bash
-     ./n8n-commit.sh -m "Your commit message"
-     ```
+   - Use the `n8n-commit.sh` script to export your workflows. They will be exported in local-files/backups
+    - Export only:
+        ```bash
+        ./n8n-commit.sh
+        ```   
+     -  Export and commit : 
+        ```bash
+        ./n8n-commit.sh -m "Your commit message"
+        ```
+     - Export, commit and push :
+        ```
+        ./n8n-commit.sh -m "Your commit message" -p
+        ```
 
 2. **Version Control**
-   - Workflows are automatically exported to the `local-files` directory
+   - Workflows are automatically exported to the `local-files/backups` directory
    - Each workflow is saved as a separate JSON file
    - Commit and push changes to your GitHub repository
 
@@ -67,19 +79,14 @@ Required environment variables:
 - `GENERIC_TIMEZONE`: Timezone for n8n
 
 ## Deployment
-<!-- 1. **Production Server Setup**
-   - Clone this repository on your production server
-   - Configure environment variables for production
-   - Set up SSL certificates if needed -->
+1. **Production Server Setup**
+   - Have n8n ready on your server, either with npm or docker. See [Self-Hosting n8n](https://docs.n8n.io/hosting/) for more details
+   - Clone your repository (the one initialised in `local-files/backups`) on your serveur
 
 2. **CI/CD Configuration**
    - Configure your CI/CD pipeline to:
      - Pull the latest changes
-     - Deploy workflows to production using n8n cli or a custom flow
-
-3. **Backup Strategy**
-   - Workflows are automatically backed up in the `local-files` directory
-   - Consider setting up automated backup to a secure location
+     - Run pull.sh
 
 ## Contributing
 1. Fork the repository
