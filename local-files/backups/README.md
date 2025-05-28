@@ -7,22 +7,35 @@ Files are automatically exported and versioned here.
 - .json files contain exported workflows
 - Each file represents a complete workflow
 
-## Usage
-Workflows can be imported into n8n using the command:
-```
-n8n import:workflow --separate --input=.
+## Scripts
+
+### pull.sh
+The `pull.sh` script is used to pull and import n8n workflows from the backup repository.
+
+#### Basic Usage
+```bash
+./pull.sh [options]
 ```
 
-Or, if using docker:
+#### Options
+- `-d` or `--docker`: Specify the Docker container name where n8n is running
+  - Example: `./pull.sh -d n8n-container`
+  - If not provided, the script will attempt to use n8n CLI directly on your host machine
 
-1. First, copy the backup files to the container:
-```
-docker cp . YOUR_DOCKER_CONTAINER_NAME:/tmp/n8n-backups
-```
+#### What the Script Does
+1. Pulls the latest changes from the remote repository
+2. Then either:
+   - If Docker container name is provided: Copies the backup files to the container and imports them using n8n CLI inside the container
+   - If no Docker container name: Uses n8n CLI directly on your host machine to import the workflows
 
-2. Then, connect to the container and import the workflows:
-```
-docker exec -it YOUR_DOCKER_CONTAINER_NAME sh -c "cd /tmp/n8n-backups && n8n import:workflow --separate --input=."
-```
+#### Important Notes
+1. The script requires Git to be initialized in the directory
 
-Note: Replace `YOUR_DOCKER_CONTAINER_NAME` with your actual n8n container name.
+#### Example Usage
+```bash
+# Using with Docker
+./pull.sh -d my-n8n-container
+
+# Using without Docker (direct n8n CLI)
+./pull.sh
+```
