@@ -1,0 +1,70 @@
+{
+  "createdAt": "2025-05-14T13:42:44.071Z",
+  "updatedAt": "2025-05-17T17:43:10.000Z",
+  "id": "o3v4QHFzdQrIEZOp",
+  "name": "Bons de commandes Hector -> CTRL",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "daa6a648-4a7a-4d0f-99c6-0e19beebf464",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "purchaseOrders",
+        "state": "New"
+      },
+      "type": "CUSTOM.hectorAssetsManager",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "b2a3906d-3276-4ba4-b505-af7a307b3c77",
+      "name": "Hector Assets Manager",
+      "credentials": {
+        "hectorAssetsManagerApi": {
+          "id": "b5g0cH747vgz2njp",
+          "name": "Hector Assets Manager account TEST"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Hector Assets Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "427ecdbc-dc4b-4a8f-b5a9-ca1671796110",
+  "triggerCount": 0,
+  "tags": []
+}

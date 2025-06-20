@@ -1,0 +1,733 @@
+{
+  "createdAt": "2025-04-29T19:39:18.648Z",
+  "updatedAt": "2025-05-29T12:45:58.000Z",
+  "id": "iU5mkPeX7QtLYSWl",
+  "name": "Ctrl Projects to Hector",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -900,
+        -40
+      ],
+      "id": "4d005beb-a5f2-4791-96bf-a628b1d92b1f",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "Projet",
+        "Field": "Projet.IdentifiantUnique,Projet.TimestampDerniereSauvegarde,Projet,Description,Dossier,Adresse1_1er,Adresse1_2ieme,Ville1,Province1,CodePostal1,Pays1,Adresse2,Ligne2Adresse2,Ville2,Province2,CodePostal2,Pays2",
+        "FieldOrder": "Projet",
+        "Filter": {
+          "FilterItems": [
+            {
+              "Name": "Projet.TimestampDerniereSauvegarde",
+              "Value": "={{ $json.latestExecution.toDateTime().toLocal().format('yyyy-MM-dd HH:mm:ss') }}.."
+            },
+            {
+              "Name": "Dossier.Type",
+              "Value": "PRJ"
+            },
+            {
+              "Name": "Projet.Projet",
+              "Value": "<>''"
+            }
+          ]
+        },
+        "Count": null,
+        "StartIndex": null,
+        "Relation": "Projet.Projet=Dossier.Dossier",
+        "RelationTable": "Dossier"
+      },
+      "type": "CUSTOM.ctrl",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -40
+      ],
+      "id": "ded32dd8-2d1c-4801-b779-d2e139cd0037",
+      "name": "Ctrl",
+      "credentials": {
+        "ctrlApi": {
+          "id": "Q6MZdtBaXJXV2Jdu",
+          "name": "Ctrl account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 0.1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1740,
+        160
+      ],
+      "id": "df497a38-8f50-4aa5-a050-66f5db647f5b",
+      "name": "Wait",
+      "webhookId": "00d6630c-08e3-46b2-bfde-2bbcbb98d47a",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "return {latestExecution:$input.all()[0].json.executed_at ?? new Date(0).toISOString()}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        80
+      ],
+      "id": "7ac48606-64ba-44cd-a4c9-79ca1a45f073",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "Field": "Projet.IdentifiantUnique,Projet,Dossier,Dossier.TimestampDerniereSauvegarde,Adresse1_1er,Adresse1_2ieme,Ville1,Province1,CodePostal1,Pays1,Adresse2,Ligne2Adresse2,Ville2,Province2,CodePostal2,Pays2",
+        "FieldOrder": "Projet",
+        "Filter": {
+          "FilterItems": [
+            {
+              "Name": "Dossier.TimestampDerniereSauvegarde",
+              "Value": "={{ $json.latestExecution.toDateTime().toLocal().format('yyyy-MM-dd HH:mm:ss') }}.."
+            },
+            {
+              "Name": "Dossier.Type",
+              "Value": "PRJ"
+            },
+            {
+              "Name": "Projet.Projet",
+              "Value": "<>''"
+            }
+          ]
+        },
+        "Count": null,
+        "StartIndex": null,
+        "Relation": "Projet.Projet=Dossier.Dossier",
+        "RelationTable": "Projet"
+      },
+      "type": "CUSTOM.ctrl",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        160
+      ],
+      "id": "9c21e024-dbf3-455d-9014-a09e681f57c4",
+      "name": "Ctrl1",
+      "credentials": {
+        "ctrlApi": {
+          "id": "Q6MZdtBaXJXV2Jdu",
+          "name": "Ctrl account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "Projet",
+              "field2": "Dossier"
+            }
+          ]
+        },
+        "joinMode": "keepEverything",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferInput1"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        420,
+        80
+      ],
+      "id": "7ee3acbc-af91-47a0-97f9-7d6f0b72613b",
+      "name": "Merge",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "searchFilter": "={{ $json.Description }}"
+      },
+      "type": "CUSTOM.hectorAssetsManager",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        80
+      ],
+      "id": "6294844c-af9b-4931-bfb1-a0e336950e7c",
+      "name": "Hector Assets Manager3",
+      "alwaysOutputData": true,
+      "credentials": {
+        "hectorAssetsManagerApi": {
+          "id": "b5g0cH747vgz2njp",
+          "name": "Hector Assets Manager account TEST"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn {\n  projets:$input.all().flatMap(x=>x.json)\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        -40
+      ],
+      "id": "58027a42-2ed0-4452-8fa1-726d9315d63d",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nreturn {\n  dossiers: $input.all().flatMap(x=>x.json)\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        160
+      ],
+      "id": "fa9b9952-0092-4343-b191-87299e6c53f6",
+      "name": "Code4"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "projets",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        200,
+        -40
+      ],
+      "id": "ac1b80ce-8279-4b0c-ae07-f0ad81f26c20",
+      "name": "Split Out1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "dossiers",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        200,
+        160
+      ],
+      "id": "314b828e-2d3a-4a73-8ca7-9104befc8f48",
+      "name": "Split Out2",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        640,
+        80
+      ],
+      "id": "317b332f-f892-478b-b78f-2345dd3c2908",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4a52fbb6-2730-41a1-9cff-5c572ba7f232",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        860,
+        80
+      ],
+      "id": "50fa3489-7b3d-4978-956d-1a36e512637d",
+      "name": "If not empty"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "892125d9-76e1-4e79-afb4-4df682fb34d3",
+              "leftValue": "={{ $json.totalItems }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1300,
+        80
+      ],
+      "id": "8f6c9069-ab43-4459-a27a-72f60800d6d1",
+      "name": "If empty1"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "id": "={{ $json.items[0].id }}",
+        "name": "={{ $('Loop Over Items').item.json.Description }}",
+        "code": "={{ $('Loop Over Items').item.json.Projet }}",
+        "objectSid": "={{ $json.items[0]?.objectSid ?? 'CTRL-' + $('Loop Over Items').item.json.IdentifiantUnique }}",
+        "description": "Chantier",
+        "street": "={{ $('Loop Over Items').item.json.Adresse1_1er ??  $('Loop Over Items').item.json.Adresse2 }}",
+        "cityId": null,
+        "cityName": "={{ $('Loop Over Items').item.json.Ville1 ??  $('Loop Over Items').item.json.Ville2 }}",
+        "stateName": "={{ $('Loop Over Items').item.json.Province1 ??  $('Loop Over Items').item.json.Province2 }}",
+        "countryName": "={{ $('Loop Over Items').item.json.Pays1 ??  $('Loop Over Items').item.json.Pays2 }}",
+        "zipPostalCode": "={{ $('Loop Over Items').item.json.CodePostal1 ??  $('Loop Over Items').item.json.CodePostal2 }}",
+        "checkAttributesForDuplicates": true,
+        "loanerSettings": {}
+      },
+      "type": "CUSTOM.hectorAssetsManager",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        180
+      ],
+      "id": "b67db885-6945-4f6d-b272-4361f48087f3",
+      "name": "Hector Assets Manager2",
+      "retryOnFail": false,
+      "credentials": {
+        "hectorAssetsManagerApi": {
+          "id": "b5g0cH747vgz2njp",
+          "name": "Hector Assets Manager account TEST"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "name": "={{ $('Loop Over Items').item.json.Description }}",
+        "code": "={{ $('Loop Over Items').item.json.Projet }}",
+        "objectSid": "={{ $json.items[0]?.objectSid ?? 'CTRL-' + $('Loop Over Items').item.json.IdentifiantUnique }}",
+        "description": "Chantier",
+        "street1": "={{ $('Loop Over Items').item.json.Adresse1_1er ??  $('Loop Over Items').item.json.Adresse2 }}",
+        "cityId": null,
+        "cityName": "={{ $('Loop Over Items').item.json.Ville1 ??  $('Loop Over Items').item.json.Ville2 }}",
+        "stateName": "={{ $('Loop Over Items').item.json.Province1 ??  $('Loop Over Items').item.json.Province2 }}",
+        "countryName": "={{ $('Loop Over Items').item.json.Pays1 ??  $('Loop Over Items').item.json.Pays2 }}",
+        "zipPostalCode": "={{ $('Loop Over Items').item.json.CodePostal1 ??  $('Loop Over Items').item.json.CodePostal2 }}"
+      },
+      "type": "CUSTOM.hectorAssetsManager",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        -20
+      ],
+      "id": "6a76a52a-7fe0-4c89-85c7-72e50e3b02bd",
+      "name": "Hector Assets Manager4",
+      "retryOnFail": false,
+      "credentials": {
+        "hectorAssetsManagerApi": {
+          "id": "b5g0cH747vgz2njp",
+          "name": "Hector Assets Manager account TEST"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "maconnerie_gy",
+          "mode": "list",
+          "cachedResultName": "maconnerie_gy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "syncs",
+          "mode": "list",
+          "cachedResultName": "syncs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "flow_name": "={{ $workflow.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "flow_name",
+              "displayName": "flow_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "executed_at",
+              "displayName": "executed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        860,
+        -120
+      ],
+      "id": "78b997e1-2269-4e7c-a3e3-d63e52847405",
+      "name": "Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "rX4SM38ILXFgdSB9",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * from maconnerie_gy.syncs WHERE flow_name = $1 and executed_at < now() ORDER BY executed_at DESC LIMIT 1",
+        "options": {
+          "queryReplacement": "={{$workflow.id}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -680,
+        80
+      ],
+      "id": "a42325ae-32e7-45a0-aa93-580e9eb2f4e4",
+      "name": "Postgres1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "rX4SM38ILXFgdSB9",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -900,
+        160
+      ],
+      "id": "e64e996a-22de-45cb-a42f-f22b12ce0222",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Postgres1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ctrl": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Ctrl",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ctrl1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ctrl1": {
+      "main": [
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hector Assets Manager3": {
+      "main": [
+        [
+          {
+            "node": "If empty1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If not empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If not empty": {
+      "main": [
+        [
+          {
+            "node": "Hector Assets Manager3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If empty1": {
+      "main": [
+        [
+          {
+            "node": "Hector Assets Manager4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Hector Assets Manager2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hector Assets Manager2": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hector Assets Manager4": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres1": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Postgres1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "cc8f0236-23fb-4e1f-8e39-5d59c3863e62",
+  "triggerCount": 0,
+  "tags": []
+}
