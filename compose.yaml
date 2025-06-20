@@ -51,7 +51,14 @@ services:
     volumes:
       - ./n8n_data:/home/node/.n8n
       - ./local-files:/files
+      - ../n8n_nodes/hector/:/home/node/.n8n/custom
+    networks:
+      - local_network
 
 volumes:
   n8n_data:
   traefik_data:
+
+networks:
+  local_network:
+    external: true
